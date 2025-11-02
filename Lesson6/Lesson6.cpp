@@ -1,7 +1,16 @@
 ﻿#include <iostream>
 #include <string>
+#include <vector>
 
 using namespace std;
+
+// push_back(value) -  додати в кінці колекції
+// pop_back() - прибрати з кінця
+// size() - повертає розмір колекції
+// empty() - повертає чи порожня колекція
+// clear() - очищає всі елементи
+// at(index) - безпечний доступ за індексом 
+// operator[index] - доступ за індексом без перевірки
 
 struct Account
 {
@@ -17,19 +26,32 @@ public:
 	void signUp()
 	{
 		if (!isLogIn) {
-			cout << "Please enter your E-Mail to create an account" << endl;
-			cout << "Enter your E-Mail: ";
-			cin >> email;
-			cout << "Please enter the desired password" << endl;
-			cout << "Enter the password: ";
-			cin >> password;
-			cout << "Please enter the desired username" << endl;
-			cout << "Enter the username: ";
-			cin >> username;
-			isLogIn = true;
+			while (true) {
+				cout << "Please enter your E-Mail to create an account" << endl;
+				cout << "Enter your E-Mail: ";
+				cin >> email;
+				if (!isValidEmail(email)) {
+					cout << "The email you entered is invalid, you will be returned to start of the Sign Up process";
+					continue;
+				}
+				cout << "Please enter the desired password" << endl;
+				cout << "Enter the password: ";
+				cin >> password;
+				if (!isValidPassword(password)) {
+					cout << "The password you entered is invalid, you will be returned to start of the Sign Up process";
+					continue;
+				}
+				cout << "Please enter the desired username" << endl;
+				cout << "Enter the username: ";
+				cin >> username;
+				isLogIn = true;
+				break;
+			}
+			menuUi();
 		}
 		else {
 			cout << "Oops, an account for this user already exists. Use the Log In option instead" << endl;
+			menuUi();
 		}
 	}
 
@@ -150,6 +172,7 @@ public:
 					if (passwordLogIn == password) {
 						cout << "Log in succesfull! Welcome " << username << endl;
 						isLogIn = true;
+						menuUi();
 						break;
 					}
 					else {
@@ -162,22 +185,60 @@ public:
 			}
 			else {
 				cout << "Oops, you are already logged in" << endl;
+				menuUi();
 			}
 		}
 	}
 
 	void buySkyrim()
 	{
-		cout << "Skytom";
+		if (isLogIn) {
+			cout << "Skytom";
+		}
+	}
+
+	void menuUi(){
+		while (true) {
+			int userChoice = 0;
+			if (!isLogIn) {
+				cout << "Welcome, you're not logged in" << endl;
+				cout << "1. Log In" << endl;
+				cout << "2. Sign Up" << endl;
+				cout << "To choose an option enter its number: ";
+				cin >> userChoice;
+				switch (userChoice) {
+				case 1: logIn(); break;
+				case 2: signUp(); break;
+				default: cout << "The option you entered doen't exist" << endl;
+				}
+			}
+			else {
+				cout << "Welcome, " << username << endl;
+				cout << "1. Show your info" << endl;
+				cout << "2. Buy Skyrim" << endl;
+				cout << "3. Log In" << endl;
+				cout << "4. Sign Up" << endl;
+				cout << "To choose an option enter its number: ";
+				cin >> userChoice;
+				switch (userChoice) {
+				case 1: showInfo(); break;
+				case 2: buySkyrim(); break;
+				case 3: isLogIn = false; logIn(); break;
+				case 4: isLogIn = false; signUp(); break;
+				default: cout << "The option you entered doen't exist" << endl;
+				}
+			}
+		}
 	}
 };
 
 int main()
 {
-
+	vector<Account> accounts;
 	Account user1;
 	user1.signUp();
-	user1.isValidPassword("c3K1u=£1sZ{m");
-	cout << user1.isValidEmail("example@mail.com") << endl;
+	accounts.push_back(user1);
+	/*user1.isValidPassword("c3K1u=£1sZ{m");
+	cout << user1.isValidEmail("example@mail.com") << endl;*/
 	return 0;
 }
